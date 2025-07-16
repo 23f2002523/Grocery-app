@@ -16,6 +16,18 @@
 </head>
 <body>
     {% include 'navbar.html' %}
+
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+        {% for message in messages %}
+        <div class="alert alert-danger" role="alert">
+            {{messages}}
+        </div>
+        {% endfor %}
+        
+    {% endif %}
+    {% endwith %}
+
     <div calss="container">
     {% block content %}
     {% endblock %}

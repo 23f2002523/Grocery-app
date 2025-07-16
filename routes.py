@@ -1,14 +1,19 @@
-from flask import render_template,request,flash,redirect,url_for
+from flask import render_template,request,flash,redirect,url_for,session
 from models import User,db # models.py se User model import karega 
 from werkzeug.security import generate_password_hash, check_password_hash # password hashing ke liye, aurpassword verification ke liye
 from app import app  # app.py se Flask instance import karega
 
-@app.route('/')
+@app.route('/')  
 def home():
-    return render_template('index.html')  # templates/index.html render karega
+    #user_id in session 
+    if 'user_id' in session:
+        return render_template('index.html')  # templates/index.html render karega
+    else:
+        flash('Please login to access the home page.')
+        return redirect(url_for('login'))  # agar user login nahi hai to login page pe redirect karega
 
 @app.route('/login', methods=['GET'])
-def login():
+def login():  
     return render_template('login.html')
 
 @app.route('/login', methods=['POST'])
@@ -30,6 +35,8 @@ def login_post():
         flash('Incorrect Password!')
         return redirect(url_for('login'))
     
+    session['user_id'] = user.id  # User ID ko session me store karega
+    flash('Login successful!')
     return redirect(url_for('home'))  # Successful login, redirect to home page
 
 
